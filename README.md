@@ -21,10 +21,10 @@ CelebA dataset (http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), which is avai
 
 I got the Inception v3 model from Kaggle, but it can also be downloaded from: http://download.tensorflow.org/models/inception_v3_2016_08_28.tar.gz
 
-###Overall
+### Overall
 202,599 number of face images of various celebrities 10,177 unique identities, but names of identities are not given 40 binary attribute annotations per image 5 landmark locations
 
-###Data Files
+### Data Files
 img_align_celeba.zip: All the face images, cropped and aligned
 list_eval_partition.csv: Recommended partitioning of images into training, validation, testing sets. Images 1-162770 are training, 162771-182637 are validation, 182638-202599 are testing
 list_bbox_celeba.csv: Bounding box information for each image. "x_1" and "y_1" represent the upper left point coordinate of bounding box. "width" and "height" represent the width and height of bounding box
