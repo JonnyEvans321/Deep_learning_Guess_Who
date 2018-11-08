@@ -14,6 +14,8 @@ A player wins if they guess correctly, or their opponent guesses incorrectly.
 
 The AI's question asking 'strategy' is to choose the attribute which will remove as close to half of the remaining celebrities as possible (i.e. half of its remaining celebrities can be removed).
 
+The downside of this game is that many of the questions that can be asked are subjective, and the AI has an average accuracy of  around 70% (I haven't trained it for long on my laptop yet). This means that there can be disagreement over whether a celebrity should have been removed from the board or not, and often results in the final guess of a celebrity being incorrect.
+
 ## Dataset
 CelebA dataset (http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), which is available on Kaggle: https://www.kaggle.com/jessicali9530/celeba-dataset
 
