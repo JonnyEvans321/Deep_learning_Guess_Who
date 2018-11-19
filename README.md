@@ -7,7 +7,7 @@ game.py: Plays the game of Guess Who in the console (using the trained Inception
 
 ## Demo
 
-Check out a demo video of the game here: [![Demo video](https://www.youtube.com/watch?v=at_p4a25OJk&feature=youtu.be/0.jpg)](https://www.youtube.com/watch?v=at_p4a25OJk&feature=youtu.be)
+Check out a demo video of the game here: https://www.youtube.com/watch?v=at_p4a25OJk&feature=youtu.be
 
 ![demo_video](https://im5.ezgif.com/tmp/ezgif-5-8d9578ecd7db.gif)
 
