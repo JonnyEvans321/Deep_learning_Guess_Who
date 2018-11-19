@@ -1,4 +1,4 @@
-![demo_video](https://im5.ezgif.com/tmp/ezgif-5-8d9578ecd7db.gif)
+![demo_video](ezgif.com-video-to-gif.gif)
 
 # Guess Who - Celebrities
 
