@@ -1,3 +1,5 @@
+![demo_video](https://im5.ezgif.com/tmp/ezgif-5-8d9578ecd7db.gif)
+
 # Guess Who - Celebrities
 
 This project was a bit of fun to try to create an AI playing the board game Guess Who. 
@@ -5,11 +7,7 @@ This project was a bit of fun to try to create an AI playing the board game Gues
 training.py: Creates Inception models trained to recognise each of the 40 attributes in the dataset.
 game.py: Plays the game of Guess Who in the console (using the trained Inception models)
 
-## Demo
-
 Check out a demo video of the game here: https://www.youtube.com/watch?v=at_p4a25OJk&feature=youtu.be
-
-![demo_video](https://im5.ezgif.com/tmp/ezgif-5-8d9578ecd7db.gif)
 
 ## Game playing
 Firstly, the AI is trained to recognise all 40 attributes that the celebA dataset has been labelled with, using training.py.
