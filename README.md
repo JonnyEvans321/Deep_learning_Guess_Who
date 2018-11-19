@@ -5,7 +5,7 @@ This project was a bit of fun to try to create an AI playing the board game Gues
 training.py: Creates Inception models trained to recognise each of the 40 attributes in the dataset.
 game.py: Plays the game of Guess Who in the console (using the trained Inception models)
 
-![demo_video](https://camo.githubusercontent.com/b415c55114cc4ce241c8e446ec2ae8f27ea76ac1/68747470733a2f2f6766796361742e636f6d2f49646c654368756262794775696e6561706967)
+![demo_video](https://im5.ezgif.com/tmp/ezgif-5-8d9578ecd7db.gif)
 
 ## Game playing
 Firstly, the AI is trained to recognise all 40 attributes that the celebA dataset has been labelled with, using training.py.
