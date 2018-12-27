@@ -12,8 +12,8 @@ Check out a video of me playing the game here: https://www.youtube.com/watch?v=a
 ## How the 'AI' works
 Firstly, training.py trains the 'AI' to recognise each of the 40 attributes in the celebA dataset, i.e. hair colour, gender etc.
 Once trained, 24 celebrities in the test dataset are randomly selected for the game, and the AI makes a prediction for each of the 40 attributes on each of these celebrities.  
-The game starts with the user selecting their celebrity (the AI randomly selects theirs).  
-The AI and the user take turns asking questions and answering them about the celebrities, until someone takes a guess. A player wins if they guess correctly, or their opponent guesses incorrectly.  
+The game starts with the user selecting their celebrity (the AI randomly selects theirs). Note that the names in the celeba dataset are anonymised, so i gave each of them fake unisex names.
+The AI and the user take turns asking questions and answering them about the celebrities, until someone takes a guess. If the guesser is correct they win, if wrong they lose, and the game ends after the guess.
 
 The AI's question asking 'strategy' is to choose the attribute which will remove as close to half of the remaining celebrities as possible (i.e. half of its remaining celebrities can be removed).  
 
