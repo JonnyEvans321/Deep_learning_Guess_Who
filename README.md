@@ -1,8 +1,8 @@
 ![demo_video](guess_who_demo.gif)
 
-# Guess Who - Celebrities
+# Guess Who?! 
 
-This project was a bit of fun to try to create an algorithm that can play the board game Guess Who, https://en.m.wikipedia.org/wiki/Guess_Who%3F.
+This project was a bit of fun to try to create an algorithm that can play the board game Guess Who, but with images of celebrities from the celebA dataset.
 
 training.py: Creates and trains image recognition models trained to recognise each of the 40 attributes in the dataset.  
 game.py: Plays the game of Guess Who in the console (using the trained models).
