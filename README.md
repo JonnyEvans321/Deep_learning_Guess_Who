@@ -2,12 +2,12 @@
 
 # Guess Who?! 
 
-This project was a bit of fun to try to create a computer program that can play the board game Guess Who, but with images of celebrities from the celebA dataset.
+This project was a bit of fun to try to create a computer program that can play the board game Guess Who. However, I couldn't find images of the board game characters, so I used images of celebrities from the celebA dataset instead.
+
+Check out a video of me playing the game here: https://www.youtube.com/watch?v=at_p4a25OJk&feature=youtu.be
 
 training.py: Creates and trains image recognition models trained to recognise each of the 40 attributes in the dataset.  
 game.py: Plays the game of Guess Who in the console (using the trained models).
-
-Check out a video of me playing the game here: https://www.youtube.com/watch?v=at_p4a25OJk&feature=youtu.be
 
 ## How the program works
 Firstly, training.py trains the models to recognise each of the 40 attributes in the celebA dataset, i.e. hair colour, gender etc.
