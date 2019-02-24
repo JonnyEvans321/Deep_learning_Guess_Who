@@ -2,7 +2,7 @@
 
 # Guess Who?! 
 
-This project was a bit of fun to try to create a computer program that can play the board game Guess Who. However, I couldn't find images of the board game characters, so I used images of celebrities from the celebA dataset instead.
+This project was a bit of fun to try to create a computer program that can play the board game Guess Who. I couldn't find images of the board game characters, so I used images of celebrities from the celebA dataset instead.
 
 Check out a video of me playing the game here: https://www.youtube.com/watch?v=at_p4a25OJk&feature=youtu.be
 
@@ -17,7 +17,7 @@ The algorithm and the user take turns asking questions and answering them about 
 
 The computer program's question asking 'strategy' is to choose the attribute which will remove as close to half of the remaining celebrities as possible (i.e. half of its remaining celebrities can be removed).  
 
-The downside of this game is that many of the questions that can be asked are subjective, and the model has an average accuracy of around 85% (I haven't trained it for long on my laptop yet). This means that there can be disagreement over whether a celebrity should have been removed from the board or not, and often results in the final guess of a celebrity being incorrect.
+The downside of this game is that many of the questions that can be asked are subjective, and the model has an average accuracy of around 85% (I haven't been able to train it for a long time yet, my PhD algs take priority at the moment!). This means that there can be disagreement over whether a celebrity should have been removed from the board or not, and often results in the final guess of a celebrity being incorrect.
 
 ## Dataset
 CelebA dataset (http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), which is available on Kaggle: https://www.kaggle.com/jessicali9530/celeba-dataset  
