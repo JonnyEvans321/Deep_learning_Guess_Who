@@ -13,60 +13,60 @@ from keras.layers import Dropout, Dense, GlobalAveragePooling2D
 from keras.optimizers import SGD
 
 # set variables 
-#define your local path here
-main_folder=os.path.join(os.path.dirname(__file__))
-images_folder = main_folder + '/data/celeba-dataset/img_align_celeba/'
+main_folder=os.path.join(os.path.dirname(os.path.dirname(__file__)))
+images_folder = main_folder + '/data/celeba-dataset/img_align_celeba/img_align_celeba/'
 attr_path='/data/celeba-dataset/list_attr_celeba.csv'
 
-TRAINING_SAMPLES = 10000
-VALIDATION_SAMPLES = 2000
-TEST_SAMPLES = 2000
 IMG_WIDTH = 178
 IMG_HEIGHT = 218
-BATCH_SIZE = 16
-#just one epoch to save computing time, for more accurate results increase this number
-NUM_EPOCHS = 1
+
 #decide whether you want to see what the AI is doing
-AI_PEEK=1
-
-# import the data set that include the attribute for each picture
-df_attr = pd.read_csv(main_folder + attr_path)
-df_attr.set_index('image_id', inplace=True)
-df_attr.replace(to_replace=-1, value=0, inplace=True) #replace -1 by 0
-
-## Import InceptionV3 Model
-inc_model = InceptionV3(weights=main_folder+'/inceptionv3/inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5',
-                        include_top=False,
-                        input_shape=(IMG_HEIGHT, IMG_WIDTH, 3))
-##Adding custom Layers
-x = inc_model.output
-x = GlobalAveragePooling2D()(x)
-x = Dense(1024, activation="relu")(x)
-x = Dropout(0.5)(x)
-x = Dense(512, activation="relu")(x)
-predictions = Dense(2, activation="softmax")(x)
-
-# create the model 
-model_ = Model(inputs=inc_model.input, outputs=predictions)
-
-# Lock initial layers to do not be trained
-for layer in model_.layers[:52]:
-    layer.trainable = False
-
-# compile the model
-model_.compile(optimizer=SGD(lr=0.0001, momentum=0.9)
-                    , loss='categorical_crossentropy'
-                    , metrics=['accuracy'])
-
-#select 24 images randomly from the test set
-df_to_test = df_attr.sample(24)
+AI_PEEK=0
 
 #make some unisex names up to give the game some character (the identity of the people in the images was anonymised)
-char_names=['Alex', 'Ashley', 'Brooklyn', 'Bailey', 'Casey', 'Carson', 'Devon', 'Joe', 'Flynn', 'Finn', 'Haley', 'Jamie', 'Jude', 'Kayden', 'Kerry', 'Kim', 'Lee', 'Madison', 'Micah', 'Michel', 'Noel', 'North', 'Owen', 'Page']
+char_names=['Alex', 'Ashley', 'Brooklyn', 'Bailey', 'Casey', 'Carson', 'Devon', 'Joe', 'Flynn', 'Haley', 'Jamie', 'Jude', 'Kayden', 'Kerry', 'Kim', 'Lee', 'Madison', 'Micah', 'Michel', 'Noel', 'North', 'Owen', 'Page','Sasha']
 random.shuffle(char_names)
+
 #%%
+def load_data(main_folder,attr_path):
+    # import the data set that include the attribute for each picture
+    df_attr = pd.read_csv(main_folder + attr_path)
+    df_attr.set_index('image_id', inplace=True)
+    df_attr.replace(to_replace=-1, value=0, inplace=True) #replace -1 by 0
+    
+    #select 24 images randomly from the test set
+    df_to_test = df_attr.sample(24)
+    
+    return df_to_test,df_attr
+
+def load_model(main_folder,IMG_HEIGHT,IMG_WIDTH):
+    ## Import InceptionV3 Model
+    inc_model = InceptionV3(weights=main_folder+'/inceptionv3/inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5',
+                            include_top=False,
+                            input_shape=(IMG_HEIGHT, IMG_WIDTH, 3))
+    ##Adding custom Layers
+    x = inc_model.output
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(1024, activation="relu")(x)
+    x = Dropout(0.5)(x)
+    x = Dense(512, activation="relu")(x)
+    predictions = Dense(2, activation="softmax")(x)
+    
+    # create the model 
+    model_ = Model(inputs=inc_model.input, outputs=predictions)
+    
+    # Lock initial layers to do not be trained
+    for layer in model_.layers[:52]:
+        layer.trainable = False
+    
+    # compile the model
+    model_.compile(optimizer=SGD(lr=0.0001, momentum=0.9)
+                        , loss='categorical_crossentropy'
+                        , metrics=['accuracy'])
+    return model_
+
 #use some cool html to print out the prediction in a nice way
-def make_prediction(filename,test_attr, target):
+def make_prediction(filename,test_attr, target,model_,df_to_test):
 
     im = cv2.imread(filename)
     im = cv2.resize(cv2.cvtColor(im, cv2.COLOR_BGR2RGB), (178, 218)).astype(np.float32) / 255.0
@@ -86,14 +86,14 @@ def make_prediction(filename,test_attr, target):
     return prediction
 
 #make prediction
-def ai_predict(test_attr):
+def ai_predict(test_attr,df_to_test,images_folder):
     predictions=[]
     for index, name in enumerate(df_to_test.iterrows()):
-        predictions.append(make_prediction(images_folder + df_to_test[test_attr].index[index],test_attr, df_to_test[test_attr][index]))
+        predictions.append(make_prediction(images_folder + df_to_test[test_attr].index[index],test_attr, df_to_test[test_attr][index],model_,df_to_test))
     return predictions
 
 #plot grid of images       
-def show_chars_grid(alive,player):
+def show_chars_grid(alive,player,df_to_test,char_names):
     #make grid
     fig,axes = plt.subplots(nrows = 4, ncols = 6, figsize=(20,10))
     
@@ -135,11 +135,14 @@ def show_players_char(imageid,name):
     plt.axis('off')
     plt.title(name,fontsize=20)
     plt.imshow(image)
-    return plt
+    print('AI\'s celeb:')
+    show(block=False)
+    return
 
-def user_move(user_alive,result,AI_PEEK):
+def user_move(user_alive,result,AI_PEEK,df_attr,char_names,ai_predictions):
+    print('YOUR TURN')
     #show grid of images
-    show_chars_grid(user_alive,'Your')
+    show_chars_grid(user_alive,'Your',df_to_test,char_names)
     show(block=False)
     
     #lets the user take a guess at the AI's celeb
@@ -176,7 +179,6 @@ def user_move(user_alive,result,AI_PEEK):
     while True:
         user_attr = input()
         if(user_attr in user_unasked_attrs):
-            
             break
         else:
             if(user_attr in list(df_attr.columns)):
@@ -198,7 +200,7 @@ def user_move(user_alive,result,AI_PEEK):
         show_players_char(ai_image,ai_name)
         show(block=False)
         
-    show_chars_grid(user_alive,'Your')
+    show_chars_grid(user_alive,'Your',df_to_test,char_names)
     show(block=False)
     
     #user updates which celebs it could be
@@ -221,8 +223,8 @@ def user_move(user_alive,result,AI_PEEK):
     return user_alive,result
 
 #AI's turn
-def ai_move(ai_alive,result):
-    
+def ai_move(ai_alive,result,ai_predictions):
+    print('AI\'S TURN')
     #show the user their celeb so they can tell if they have the attribute
     print('Your celeb:')
     show_players_char(user_image,user_name)
@@ -258,11 +260,9 @@ def ai_move(ai_alive,result):
                 print('The AI guessed wrong, you win! thanks for playing!')
                 result=1
                 return ai_alive,result
-                
             else:
                 print('\nPlease answer with y or n.')
                 continue
-        
         
     #find the predictions of the best attribute over all celebs (just so they updating is easier)
     best_predictions=ai_predictions[best_attr]
@@ -279,7 +279,6 @@ def ai_move(ai_alive,result):
                 a=True
             else:
                 a=False
-            
             break
         else:
             print('\nPlease answer with y or n.')
@@ -291,79 +290,90 @@ def ai_move(ai_alive,result):
             ai_alive[i]='REMOVED'
     
     return ai_alive,result
-#%%
-#ai predicts every attribute for the 24 celebs. Does this only once to save computation time
-ai_predictions={}
-for attr in list(df_attr.columns):
-    ai_predictions[attr]=ai_predict(attr)
-    print(attr)
-#%%
-#START GAME
-#initialise attributes that havent been asked yet
-ai_unasked_attrs=list(df_attr.columns)
-user_unasked_attrs=list(df_attr.columns)
-#intialise whether each character is still judged to be in the game
-#XXX reword the above
-user_alive=char_names.copy()
-ai_alive=char_names.copy()
-#flag to tell if the game has been won or not during a turn
-result=0
 
-#AI and user pick their celebs
+def make_ai_predictions(df_attr,df_to_test,images_folder):
+    #ai predicts every attribute for the 24 celebs. Does this only once to save computation time
+    ai_predictions={}
+    for attr in list(df_attr.columns):
+        ai_predictions[attr]=ai_predict(attr,df_to_test,images_folder)
+        print(attr)
+    return ai_predictions
 
-#AI randomly chooses a character to be their own
-rnd_no=random.randint(0,23)
-ai_name=char_names[rnd_no]
-ai_image=df_to_test.index[rnd_no]
-
-#user gets the choice of which character to use
-show_chars_grid(user_alive,'Your')
-#this line makes matplotlib show the figure, rather than waiting until the rest of the script finishes
-show(block=False)
-
-#ask user to choose a celebrity to be their character
-print('Please choose a celebrity (enter their name):')
-while True:
-    user_name = input()
-    if(user_name in char_names):
-        print('')
-        break
-    else:
-        print('\nThat\'s not a celebrity, try again.')
-        continue
-user_image=df_to_test.index[char_names.index(user_name)]
-
-print('Your celeb:')
-show_players_char(user_image,user_name)
-show(block=False)
-if(AI_PEEK==1):
-    print('AI\'s celeb:')
-    show_players_char(ai_image,ai_name)
-    show(block=False)
-
-#play game
-round_count=0
-while True:
-    round_count=round_count+1
-    print('------- ROUND ',round_count,'-------')
-    print('YOUR TURN')
-    user_alive,result=user_move(user_alive,result,AI_PEEK)
-    if(result==1):
-        break
-    """
-    #show grid of images
-    print('Your remaining celebs:')
-    show_chars_grid(user_alive,'Your')
-    show(block=False)
-    """
+def choose_char(char_names,df_to_test):
+    #AI randomly chooses a character to be their own
+    rnd_no=random.randint(0,23)
+    ai_name=char_names[rnd_no]
+    ai_image=df_to_test.index[rnd_no]
     
-    print('AI\'S TURN')
-    ai_alive,result=ai_move(ai_alive,result)
-    if(result==1):  
-        break
+    #user gets the choice of which character to use
+    show_chars_grid(user_alive,'Your',df_to_test,char_names)
+    #this line makes matplotlib show the figure, rather than waiting until the rest of the script to finish
+    show(block=False)
+    
+    #ask user to choose a celebrity to be their character
+    print('Please choose a celebrity (enter their name):')
+    while True:
+        user_name = input()
+        if(user_name in char_names):
+            print('')
+            break
+        else:
+            print('\nThat\'s not a celebrity, try again.')
+            continue
+    user_image=df_to_test.index[char_names.index(user_name)]
+    
+    print('Your celeb:')
+    show_players_char(user_image,user_name)
+    show(block=False)
     if(AI_PEEK==1):
-        #show grid of images
-        show_chars_grid(ai_alive,'AI')
-        print('AI\'s remaining celebs:')
+        print('AI\'s celeb:')
+        show_players_char(ai_image,ai_name)
         show(block=False)
         
+    return user_image,user_name,ai_image,ai_name
+
+def init_game(df_attr,char_names):
+    #initialise attributes that havent been asked yet
+    ai_unasked_attrs=list(df_attr.columns)
+    user_unasked_attrs=list(df_attr.columns)
+    #intialise whether each character is still judged to be in the game
+    user_alive=char_names.copy()
+    ai_alive=char_names.copy()
+    #flag to tell if the game has been won or not during a turn
+    result=0
+    #play game
+    round_count=0
+    return result,round_count,user_alive,ai_alive,ai_unasked_attrs,user_unasked_attrs
+#%%
+if __name__ == '__main__':
+    # load the data and model
+    df_to_test,df_attr=load_data(main_folder,attr_path)
+    model_=load_model(main_folder,IMG_HEIGHT,IMG_WIDTH)
+    
+    #make predictions for all of the images being used
+    ai_predictions=make_ai_predictions(df_attr,df_to_test,images_folder)
+    
+    #init game
+    result,round_count,user_alive,ai_alive,ai_unasked_attrs,user_unasked_attrs=init_game(df_attr,char_names)
+    #choose characters
+    user_image,user_name,ai_image,ai_name=choose_char(char_names,df_to_test)
+    
+    #PLAY GAME
+    while True:
+        round_count=round_count+1
+        print('------- ROUND ',round_count,'-------')
+        
+        user_alive,result=user_move(user_alive,result,AI_PEEK,ai_predictions,char_names,ai_predictions)
+        if(result==1):
+            show_players_char(ai_image,ai_name)
+            break
+        if(AI_PEEK==1):
+            show_players_char(ai_image,ai_name)
+        
+        ai_alive,result=ai_move(ai_alive,result,ai_predictions)
+        if(result==1):  
+            show_players_char(ai_image,ai_name)
+            break
+        if(AI_PEEK==1):
+            #show grid of images
+            show_chars_grid(ai_alive,'AI',df_to_test,char_names)
