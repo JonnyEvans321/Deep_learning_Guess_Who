@@ -9,6 +9,9 @@ Check out a video of me playing the game here: https://www.youtube.com/watch?v=a
 training.py: Creates and trains image recognition models trained to recognise each of the 40 attributes in the dataset.  
 game.py: Plays the game of Guess Who in the console (using the trained models).
 
+Instructions:
+Run training.py first, then run game.py. The game will be started in the terminal.
+
 ## How the program works
 Firstly, training.py trains the models to recognise each of the 40 attributes in the celebA dataset, i.e. hair colour, gender etc.
 Once trained, 24 celebrities in the test dataset are randomly selected for the game, and the model makes a prediction for each of the 40 attributes on each of these celebrities.  
